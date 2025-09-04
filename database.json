@@ -13,11 +13,10 @@
     },
     "time_threshold": 10,
     "updated": true,
-    "currencies": [USD,EUR,GBP],
+    "currencies": [],
     "impacts": [
         "red",
         "orange",
-        "yellow",
         "grey"
     ],
     "all_currencies": [
@@ -46,3 +45,4 @@
     ]
 
 }
+
