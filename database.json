@@ -1,39 +1,34 @@
 {
     "timezone": {
-        "name": "Etc/GMT+12",
-        "offset": "UTC-12"
+        "name": "Etc/GMT+0",
+        "offset": "UTC+0"
     },
     "timezone_scraped": {
         "name": "Asia/Yekaterinburg",
         "offset": "UTC+5"
     },
     "daily_update": {
-        "hour": 19,
-        "minute": 7
+        "hour": 9,
+        "minute": 0
     },
     "time_threshold": 10,
-    "updated": true,
+    "updated": false,
     "currencies": [
-    "NZD",
-    "JPY",
-    "GBP",
-    "CNY",
-    "CHF",
-    "AUD",
-    "CAD",
-    "EUR",
-    "USD"
-],
-"impacts": [
-    "red",
-    "orange",
-    "yellow",
-    "gray"
-]
-
+        "NZD",
+        "JPY",
+        "GBP",
+        "CNY",
+        "CHF",
+        "AUD",
+        "CAD",
+        "EUR",
+        "USD"
+    ],
+    "impacts": [
         "red",
         "orange",
-        "grey"
+        "yellow",
+        "gray"
     ],
     "all_currencies": [
         "NZD",
@@ -44,7 +39,6 @@
         "AUD",
         "CAD",
         "EUR",
-        "GBP",
         "USD"
     ],
     "all_impacts": [
@@ -53,13 +47,5 @@
         "yellow",
         "gray"
     ],
-    "updated_rows": [
-        "[\"2023-10-02\", \"15:00\", \"USD\", \"red\", \"ISM Manufacturing PMI\", \"UTC+1\", false]",
-        "[\"2023-10-02\", \"15:00\", \"USD\", \"orange\", \"ISM Manufacturing Prices\", \"UTC+1\", false]",
-        "[\"2023-10-02\", \"16:00\", \"USD\", \"red\", \"Fed Chair Powell Speaks\", \"UTC+1\", false]",
-        "[\"2023-10-02\", \"16:00\", \"USD\", \"orange\", \"FOMC Member Harker Speaks\", \"UTC+1\", false]"
-    ]
-
+    "updated_rows": []
 }
-
-
