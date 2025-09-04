@@ -13,10 +13,11 @@
     },
     "time_threshold": 10,
     "updated": true,
-    "currencies": [],
+    "currencies": [USD,EUR,GBP],
     "impacts": [
         "red",
         "orange",
+        "yellow",
         "grey"
     ],
     "all_currencies": [
@@ -43,4 +44,5 @@
         "[\"2023-10-02\", \"16:00\", \"USD\", \"red\", \"Fed Chair Powell Speaks\", \"UTC+1\", false]",
         "[\"2023-10-02\", \"16:00\", \"USD\", \"orange\", \"FOMC Member Harker Speaks\", \"UTC+1\", false]"
     ]
+
 }
