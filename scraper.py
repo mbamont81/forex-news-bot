@@ -50,6 +50,21 @@ def scrape_forexfactory():
         except Exception as e:
             print("Error parsing row:", e)
 
+if events:
+    df = pd.DataFrame(events)
+    month = datetime.now().strftime("%B")
+    output_path = f"news/{month}_news.csv"
+    df.to_csv(output_path, index=False)
+    print(f"✅ Archivo actualizado: {output_path}")
+else:
+    # ⚠️ Crear un CSV vacío para que no falle el bot
+    month = datetime.now().strftime("%B")
+    output_path = f"news/{month}_news.csv"
+    df = pd.DataFrame(columns=["date","time","currency","impact","event"])
+    df.to_csv(output_path, index=False)
+    print(f"⚠️ No se encontraron noticias, se creó un CSV vacío: {output_path}")
+
+
     # Guardar CSV
     if events:
         df = pd.DataFrame(events)
