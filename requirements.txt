@@ -4,3 +4,4 @@ asyncio
 discord.py
 requests
 aiofiles
+beautifulsoup4
