@@ -19,23 +19,39 @@ async def send_qoute(message):
   await message.channel.send(quote)
   return (quote)
 
-async def handle_timezone_message(client,message):
-  select_timezone = "Please select timezone from UTC-12 to UTC+14"
-  await message.channel.send(select_timezone)
+async def handle_timezone_message(client, message):
+    # Caso 1: el usuario ya pasó la zona en el mismo comando
+    parts = message.content.split(maxsplit=1)
+    if len(parts) == 2:
+        tz_input = parts[1].strip()
+        timezone_name, message_for_timezone = find_timezone_name_using_offset(tz_input)
+        if timezone_name:
+            await set_user_timezone(timezone_name, tz_input, message.channel)
+            await message.channel.send(f"✅ Timezone updated to {timezone_name}")
+        else:
+            await message.channel.send(f"❌ Invalid timezone: {tz_input}")
+        return
 
-  def check(m):
-    return m.author == message.author and m.channel == message.channel and m.content.strip().startswith('UTC')
-  try:
-    reply = await client.wait_for('message', timeout=60.0, check=check)
+    # Caso 2: no pasó nada → pedimos que elija
+    select_timezone = "Please select timezone (e.g., `Europe/Madrid`, `Etc/Greenwich`, or `UTC+2`)"
+    await message.channel.send(select_timezone)
 
-  except asyncio.TimeoutError:
-    await message.channel.send("Sorry, you took too long to reply.")
-  else:
-    timezone_name, message_for_timezone = find_timezone_name_using_offset(reply.content)
-    if not timezone_name:
-      await set_user_timezone(timezone_name, reply.content,message.channel)
+    def check(m):
+        return m.author == message.author and m.channel == message.channel
+
+    try:
+        reply = await client.wait_for('message', timeout=60.0, check=check)
+    except asyncio.TimeoutError:
+        await message.channel.send("Sorry, you took too long to reply.")
     else:
-      await message.channel.send(message_for_timezone)
+        tz_input = reply.content.strip()
+        timezone_name, message_for_timezone = find_timezone_name_using_offset(tz_input)
+        if timezone_name:
+            await set_user_timezone(timezone_name, tz_input, message.channel)
+            await message.channel.send(f"✅ Timezone updated to {timezone_name}")
+        else:
+            await message.channel.send(f"❌ Invalid timezone: {tz_input}")
+
 
 
 async def state(message):
@@ -129,4 +145,5 @@ async def set_daily_update_time(message):
         else:
             await message.channel.send("Invalid hour or minute format. Please use two-digit format, e.g., !daily:03:03")
     else:
+
         await message.channel.send("Invalid command format. Please use !daily:hh:mm")
