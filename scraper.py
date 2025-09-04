@@ -3,8 +3,8 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from datetime import datetime
 
-def scrape_forexfactory():
-    url = "https://www.forexfactory.com/calendar.php"
+def scrape_investing():
+    url = "https://www.investing.com/economic-calendar/"
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                       "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -15,33 +15,40 @@ def scrape_forexfactory():
         response = requests.get(url, headers=headers, timeout=10)
         response.raise_for_status()
     except Exception as e:
-        print(f"⚠️ Error accediendo a ForexFactory: {e}")
+        print(f"⚠️ Error accediendo a Investing.com: {e}")
         return
 
     soup = BeautifulSoup(response.text, "html.parser")
-    
     events = []
     current_date = datetime.now()
     month = current_date.strftime("%B")
-    year = current_date.strftime("%Y")
 
-    # Busca filas de la tabla de noticias
-    for row in soup.select("tr.calendar__row"):
+    # Buscar filas de la tabla de eventos
+    for row in soup.select("tr.js-event-item"):
         try:
-            time_cell = row.select_one("td.calendar__time")
-            currency_cell = row.select_one("td.calendar__currency")
-            impact_cell = row.select_one("td.calendar__impact span")
-            event_cell = row.select_one("td.calendar__event")
+            time_cell = row.select_one("td.time")
+            currency_cell = row.select_one("td.left.flagCur span")
+            impact_cell = row.select("td.sentiment span")
+            event_cell = row.select_one("td.event")
 
-            # Extraer datos limpios
             time = time_cell.get_text(strip=True) if time_cell else ""
             currency = currency_cell.get_text(strip=True) if currency_cell else ""
-            impact = impact_cell.get("title").lower() if impact_cell else "grey"
             event = event_cell.get_text(strip=True) if event_cell else ""
+
+            # Impacto: basado en número de "bullish icons" (1-3)
+            impact = "grey"
+            if impact_cell:
+                stars = len(impact_cell)
+                if stars == 1:
+                    impact = "yellow"
+                elif stars == 2:
+                    impact = "orange"
+                elif stars >= 3:
+                    impact = "red"
 
             if currency and event:
                 events.append({
-                    "date": current_date.strftime("%Y-%m-%d"),  # fecha actual
+                    "date": current_date.strftime("%Y-%m-%d"),
                     "time": time,
                     "currency": currency,
                     "impact": impact,
@@ -50,7 +57,7 @@ def scrape_forexfactory():
         except Exception as e:
             print("Error parsing row:", e)
 
-    # Guardar CSV siempre (aunque no haya eventos)
+    # Guardar siempre CSV
     output_path = f"news/{month}_news.csv"
     if events:
         df = pd.DataFrame(events)
@@ -59,8 +66,8 @@ def scrape_forexfactory():
     else:
         df = pd.DataFrame(columns=["date","time","currency","impact","event"])
         df.to_csv(output_path, index=False)
-        print(f"⚠️ No se encontraron noticias, se creó un CSV vacío: {output_path}")
+        print(f"⚠️ No se encontraron eventos, se creó un CSV vacío: {output_path}")
 
 
 if __name__ == "__main__":
-    scrape_forexfactory()
+    scrape_investing()
