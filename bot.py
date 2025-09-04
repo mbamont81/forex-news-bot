@@ -88,5 +88,8 @@ class MyClient(discord.Client):
             await utils.news_updates(self,df,self.botChannel)
             await asyncio.sleep(10)
 
+import os
+
 client = MyClient(intents = discord.Intents.all())
-client.run(client.config['token'])
+TOKEN = os.getenv("DISCORD_TOKEN")  # Variable definida en Railway
+client.run(TOKEN)
