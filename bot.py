@@ -91,12 +91,14 @@ class MyClient(discord.Client):
             await utils.news_updates(self,df,self.botChannel)
             await asyncio.sleep(10)
 
-from scraper import scrape_forexfactory   # 👈 importa tu scraper
+from scraper_investing import scrape_investing
 
-# Ejecutar scraper para actualizar noticias
-scrape_forexfactory()
+# Ejecuta scraper al iniciar
+scrape_investing()
+
 # Token desde variable de entorno en Railway
 client = MyClient(intents = discord.Intents.all())
 TOKEN = os.getenv("DISCORD_TOKEN")  
 client.run(TOKEN)
+
 
