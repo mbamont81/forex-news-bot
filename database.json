@@ -13,8 +13,24 @@
     },
     "time_threshold": 10,
     "updated": true,
-    "currencies": [],
-    "impacts": [
+    "currencies": [
+    "NZD",
+    "JPY",
+    "GBP",
+    "CNY",
+    "CHF",
+    "AUD",
+    "CAD",
+    "EUR",
+    "USD"
+],
+"impacts": [
+    "red",
+    "orange",
+    "yellow",
+    "gray"
+]
+
         "red",
         "orange",
         "grey"
@@ -45,4 +61,5 @@
     ]
 
 }
+
 
