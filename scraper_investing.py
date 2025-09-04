@@ -20,42 +20,56 @@ def scrape_investing():
 
     soup = BeautifulSoup(response.text, "html.parser")
     events = []
-    current_date = datetime.now()
-    month = current_date.strftime("%B")
+    month = datetime.now().strftime("%B")
 
-    # Buscar filas de la tabla de eventos
-    for row in soup.select("tr.js-event-item"):
-        try:
-            time_cell = row.select_one("td.time")
-            currency_cell = row.select_one("td.left.flagCur span")
-            impact_cell = row.select("td.sentiment span")
-            event_cell = row.select_one("td.event")
+    current_event_date = None
 
-            time = time_cell.get_text(strip=True) if time_cell else ""
-            currency = currency_cell.get_text(strip=True) if currency_cell else ""
-            event = event_cell.get_text(strip=True) if event_cell else ""
+    # Recorre todas las filas de la tabla
+    for row in soup.select("tr"):
+        # Filas que son separadores de fecha
+        date_cell = row.select_one("td.theDay")
+        if date_cell:
+            # Texto del estilo "Thursday, Sep 5, 2025"
+            date_text = date_cell.get_text(strip=True)
+            try:
+                current_event_date = datetime.strptime(date_text, "%A, %b %d, %Y").strftime("%Y-%m-%d")
+            except Exception:
+                current_event_date = None
+            continue
 
-            # Impacto: basado en número de "bullish icons" (1-3)
-            impact = "grey"
-            if impact_cell:
-                stars = len(impact_cell)
-                if stars == 1:
-                    impact = "yellow"
-                elif stars == 2:
-                    impact = "orange"
-                elif stars >= 3:
-                    impact = "red"
+        # Filas que son eventos
+        if "js-event-item" in row.get("class", []):
+            try:
+                time_cell = row.select_one("td.time")
+                currency_cell = row.select_one("td.left.flagCur span")
+                impact_cell = row.select("td.sentiment span")
+                event_cell = row.select_one("td.event")
 
-            if currency and event:
-                events.append({
-                    "date": current_date.strftime("%Y-%m-%d"),
-                    "time": time,
-                    "currency": currency,
-                    "impact": impact,
-                    "event": event
-                })
-        except Exception as e:
-            print("Error parsing row:", e)
+                time = time_cell.get_text(strip=True) if time_cell else ""
+                currency = currency_cell.get_text(strip=True) if currency_cell else ""
+                event = event_cell.get_text(strip=True) if event_cell else ""
+
+                # Impacto: número de íconos "bullish"
+                impact = "grey"
+                if impact_cell:
+                    stars = len(impact_cell)
+                    if stars == 1:
+                        impact = "yellow"
+                    elif stars == 2:
+                        impact = "orange"
+                    elif stars >= 3:
+                        impact = "red"
+
+                if currency and event and current_event_date:
+                    events.append({
+                        "date": current_event_date,
+                        "time": time,
+                        "currency": currency,
+                        "impact": impact,
+                        "event": event
+                    })
+            except Exception as e:
+                print("Error parsing row:", e)
 
     # Guardar siempre CSV
     output_path = f"news/{month}_news.csv"
