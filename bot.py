@@ -3,6 +3,7 @@ import responses
 import utils
 import asyncio
 import json
+import os
 
 def read_json(path):
     with open(path, 'r') as f:
@@ -21,7 +22,7 @@ class MyClient(discord.Client):
         self.test_news_channel_id = self.config['test_news_channel_id']
         self.test_bot_operations_channel_id = self.config['test_operations_channel_id']
         
-        self.authorizedUsers = ['martinbamonte']
+        self.authorizedUsers = ['martinbamonte']  # 👈 Agrega aquí tu usuario o más en una lista
         self.testing = self.config["testing"]
         self.news_update_interval = 600
 
@@ -31,7 +32,6 @@ class MyClient(discord.Client):
         else:
             self.botOperationsChannel = self.bot_operations_channel_id
             self.botChannel = self.news_channel_id
-
 
     async def setup_hook(self) -> None:
         self.bg_task = self.loop.create_task(self.update_news_bg_task())
@@ -45,6 +45,8 @@ class MyClient(discord.Client):
         
         message_author = message.author.name
         msg = message.content
+
+        # Solo responde si es en el canal de operaciones y de un usuario autorizado
         if message.channel.id == self.botOperationsChannel and message_author in self.authorizedUsers:
             
             if message.content.lower() == '!ping':
@@ -68,10 +70,13 @@ class MyClient(discord.Client):
             if msg.strip().startswith("!impacts:"):
                 await responses.set_allowed_impacts(message) 
 
+            # 👇 Modificado: !news se publica en el canal de noticias
             if msg.strip()=="!news":
                 df = await utils.convert_timezone_and_create_csv()
-
-                await utils.news_today(self,df,message=message,channel_id=None)
+                # Publica en el canal de noticias
+                await utils.news_today(self, df, message=None, channel_id=self.botChannel)
+                # Confirma en el canal de operaciones
+                await message.channel.send("✅ Noticias publicadas en el canal de noticias.")
 
             if msg.strip().startswith("!daily:"):
                 await responses.set_daily_update_time(message)
@@ -81,16 +86,12 @@ class MyClient(discord.Client):
         await self.wait_until_ready()
         
         df = await utils.convert_timezone_and_create_csv()
-        # if self.testing:
-        #     df = await asyncio.to_thread(pd.read_csv, 'news/testing.csv')
         while not self.is_closed():
             df = await utils.convert_timezone_and_create_csv()
             await utils.news_updates(self,df,self.botChannel)
             await asyncio.sleep(10)
 
-import os
-
+# Token desde variable de entorno en Railway
 client = MyClient(intents = discord.Intents.all())
-TOKEN = os.getenv("DISCORD_TOKEN")  # Variable definida en Railway
+TOKEN = os.getenv("DISCORD_TOKEN")  
 client.run(TOKEN)
-
