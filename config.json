@@ -1,0 +1,12 @@
+{
+    "public_key":"a557002301c4a9589310b9b480a0e9f92745f42d321d94896eb3cad16ae582c5",
+    "application_id":"1413180141378469978",
+    "client_id":"1413180141378469978",
+    "client_secret":"i5WHGzREHF9XxHuQVKNgR2KuXUhUwTST",
+    "token":"MTQxMzE4MDE0MTM3ODQ2OTk3OA.GpxX56.oM3V1VQfsmra4LqrcODUNmDHZi8fB7no1VH5lU",
+    "news_channel_id":1413142120247853156,
+    "operations_channel_id":1413207463146029077,
+    "test_news_channel_id":1413207611758874664,
+    "test_operations_channel_id":1413207611758874664,
+    "testing":true
+}
