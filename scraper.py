@@ -41,7 +41,7 @@ def scrape_forexfactory():
 
             if currency and event:
                 events.append({
-                    "date": current_date.strftime("%Y-%m-%d"),  # puedes ajustarlo si quieres fechas exactas
+                    "date": current_date.strftime("%Y-%m-%d"),  # fecha actual
                     "time": time,
                     "currency": currency,
                     "impact": impact,
@@ -50,29 +50,17 @@ def scrape_forexfactory():
         except Exception as e:
             print("Error parsing row:", e)
 
-if events:
-    df = pd.DataFrame(events)
-    month = datetime.now().strftime("%B")
+    # Guardar CSV siempre (aunque no haya eventos)
     output_path = f"news/{month}_news.csv"
-    df.to_csv(output_path, index=False)
-    print(f"✅ Archivo actualizado: {output_path}")
-else:
-    # ⚠️ Crear un CSV vacío para que no falle el bot
-    month = datetime.now().strftime("%B")
-    output_path = f"news/{month}_news.csv"
-    df = pd.DataFrame(columns=["date","time","currency","impact","event"])
-    df.to_csv(output_path, index=False)
-    print(f"⚠️ No se encontraron noticias, se creó un CSV vacío: {output_path}")
-
-
-    # Guardar CSV
     if events:
         df = pd.DataFrame(events)
-        output_path = f"news/{month}_news.csv"
         df.to_csv(output_path, index=False)
-        print(f"✅ Archivo actualizado: {output_path}")
+        print(f"✅ Archivo actualizado: {output_path} con {len(events)} eventos")
     else:
-        print("⚠️ No se encontraron eventos")
+        df = pd.DataFrame(columns=["date","time","currency","impact","event"])
+        df.to_csv(output_path, index=False)
+        print(f"⚠️ No se encontraron noticias, se creó un CSV vacío: {output_path}")
+
 
 if __name__ == "__main__":
     scrape_forexfactory()
