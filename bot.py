@@ -21,7 +21,7 @@ class MyClient(discord.Client):
         self.test_news_channel_id = self.config['test_news_channel_id']
         self.test_bot_operations_channel_id = self.config['test_operations_channel_id']
         
-        self.authorizedUsers = ['firefly_26']
+        self.authorizedUsers = ['martinbamonte']
         self.testing = self.config["testing"]
         self.news_update_interval = 600
 
@@ -93,3 +93,4 @@ import os
 client = MyClient(intents = discord.Intents.all())
 TOKEN = os.getenv("DISCORD_TOKEN")  # Variable definida en Railway
 client.run(TOKEN)
+
