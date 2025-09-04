@@ -6,16 +6,20 @@ from datetime import datetime
 def scrape_forexfactory():
     url = "https://www.forexfactory.com/calendar.php"
     headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                  "AppleWebKit/537.36 (KHTML, like Gecko) "
-                  "Chrome/115.0.0.0 Safari/537.36"
-}
-response = requests.get(url, headers=headers)
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                      "AppleWebKit/537.36 (KHTML, like Gecko) "
+                      "Chrome/115.0.0.0 Safari/537.36"
+    }
 
-    response.raise_for_status()
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()
+    except Exception as e:
+        print(f"⚠️ Error accediendo a ForexFactory: {e}")
+        return
 
     soup = BeautifulSoup(response.text, "html.parser")
-
+    
     events = []
     current_date = datetime.now()
     month = current_date.strftime("%B")
