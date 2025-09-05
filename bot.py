@@ -97,8 +97,15 @@ from scraper_investing import scrape_investing
 scrape_investing()
 
 # Token desde variable de entorno en Railway
-client = MyClient(intents = discord.Intents.all())
-TOKEN = os.getenv("DISCORD_TOKEN")  
-client.run(TOKEN)
+# 🚩 Desactiva el bot temporalmente
+# client = MyClient(intents = discord.Intents.all())
+# TOKEN = os.getenv("DISCORD_TOKEN")
+# client.run(TOKEN)
+
+# 🚩 Activa el debug del scraper
+from scraper_investing_debug import debug_investing
+debug_investing()
+
+
 
 
